@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liuyanzhao.ssm.blog.mapper.announcementMapper" >
+  <resultMap id="BaseResultMap" type="com.example.demo.Pojo.Announcement" >
+    <id column="announcement_id" property="announcementId" jdbcType="INTEGER" />
+    <result column="announcement_title" property="announcementTitle" jdbcType="VARCHAR" />
+    <result column="announcement_content" property="announcementContent" jdbcType="VARCHAR" />
+    <result column="announcement_create_time" property="announcementCreateTime" jdbcType="TIMESTAMP" />
+    <result column="announcement_update_time" property="announcementUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="announcement_status" property="announcementStatus" jdbcType="INTEGER" />
+    <result column="announcement_order" property="announcementOrder" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    announcement_id, announcement_title, announcement_content, announcement_create_time, announcement_update_time, 
+    announcement_status, announcement_order
+  </sql>
+
+  <sql id="tb">announcement</sql>
+
+  <select id="getannouncementById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from <include refid="tb"/>
+    where announcement_id = #{announcementId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from <include refid="tb"/>
+    where announcement_id = #{announcementId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.liuyanzhao.ssm.blog.entity.announcement" useGeneratedKeys="true" keyProperty="announcementId">
+    insert into <include refid="tb"/>
+    (announcement_id, announcement_title, announcement_content,
+      announcement_create_time, announcement_update_time, 
+      announcement_status, announcement_order)
+    values (#{announcementId,jdbcType=INTEGER}, #{announcementTitle,jdbcType=VARCHAR}, #{announcementContent,jdbcType=VARCHAR}, 
+      #{announcementCreateTime,jdbcType=TIMESTAMP}, #{announcementUpdateTime,jdbcType=TIMESTAMP}, 
+      #{announcementStatus,jdbcType=INTEGER}, #{announcementOrder,jdbcType=INTEGER})
+  </insert>
+
+  <update id="update" parameterType="com.liuyanzhao.ssm.blog.entity.announcement" >
+    update <include refid="tb"/>
+    <set >
+      <if test="announcementTitle != null" > announcement_title = #{announcementTitle,jdbcType=VARCHAR},</if>
+      <if test="announcementContent != null" >announcement_content = #{announcementContent,jdbcType=VARCHAR},</if>
+      <if test="announcementCreateTime != null" >announcement_create_time = #{announcementCreateTime,jdbcType=TIMESTAMP},</if>
+      <if test="announcementUpdateTime != null" >announcement_update_time = #{announcementUpdateTime,jdbcType=TIMESTAMP},</if>
+      <if test="announcementStatus != null" >announcement_status = #{announcementStatus,jdbcType=INTEGER},</if>
+      <if test="announcementOrder != null" >announcement_order = #{announcementOrder,jdbcType=INTEGER},</if>
+    </set>
+    where announcement_id = #{announcementId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.liuyanzhao.ssm.blog.entity.announcement" >
+    update <include refid="tb"/>
+    set announcement_title = #{announcementTitle,jdbcType=VARCHAR},
+      announcement_content = #{announcementContent,jdbcType=VARCHAR},
+      announcement_create_time = #{announcementCreateTime,jdbcType=TIMESTAMP},
+      announcement_update_time = #{announcementUpdateTime,jdbcType=TIMESTAMP},
+      announcement_status = #{announcementStatus,jdbcType=INTEGER},
+      announcement_order = #{announcementOrder,jdbcType=INTEGER}
+    where announcement_id = #{announcementId,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="countannouncement" resultType="Integer">
+    SELECT COUNT(*) FROM <include refid="tb"/>
+    <where>
+      <if test="status!=null">
+        menu_status=#{status}
+      </if>
+    </where>
+  </select>
+
+  <!--获取公告列表-->
+  <select id="listannouncement" resultType="com.liuyanzhao.ssm.blog.entity.announcement">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM  <include refid="tb"/>
+    <where>
+      <if test="status!=null">
+        announcement_status=#{status}
+      </if>
+    </where>
+    ORDER BY announcement_status ASC, announcement_order DESC, announcement_id ASC
+  </select>
+
+
+
+</mapper>
